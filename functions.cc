@@ -1,37 +1,12 @@
-// Hospital Management Application.cpp : This file contains the 'main' function. Program execution begins and ends there.
-
-
 #include <string>
 #include <iostream>
 #include<fstream>
 #include <conio.h>
 #include <windows.h>
+#include "functions.h"
 using namespace std;
 
-
-
-bool system_Login();
-void reset_pass();
-void add_admin();
-void new_patient();
-void view_info();
-void list_patients();
-void edit_patient();
-void delete_patient();
-void back();
-
-
-
-int main()
-{
-	if(system_Login() == true){
-		back();
-	}
-	return 0;
-}
-
-
-bool system_Login()
+bool Initial_Login()
 {
 	string x, y, username, password;
 
@@ -77,6 +52,52 @@ bool system_Login()
 	return false;
 }
 
+void system_Login()
+{
+	string x, y, username, password;
+
+	cout << "Enter your username: ";
+	cin >> username;
+	cout << "Enter your password: ";
+	cin >> password;
+
+	ifstream read;
+	read.open("Login.txt");
+
+	if (!read)
+	{
+		cout << "File doesn't exist.";
+		exit(1);
+	}
+	while (read >> x) {
+		if (username == x)
+		{
+			read >> y;
+			for (int i = 0; i < 3; i++) {
+				if (password != y) {
+					cout << "Wrong password, please Re-enter your password:" << endl;
+					cin >> password;
+				}
+				if (password == y) {
+					cout << "Login Successful" << endl;
+					read.close();
+					back();
+				}
+			}
+			cout << "Error. Application Will Exit!" << endl;
+			Sleep(750);
+			read.close();
+			exit(1);
+		}
+		else
+			read >> x;
+	}
+	cout << "User not found, Application Will Exit!" << endl;
+	Sleep(750);
+	read.close();
+	exit(1);
+}
+
 void reset_pass()
 {
 	ifstream read;
@@ -94,7 +115,7 @@ void reset_pass()
 
 	while (read >> name2) {
 		read >> pass2;
-		if (name1 != name2 || pass1 !=pass2)
+		if (name1 != name2 || pass1 != pass2)
 			write << name2 + " " + pass2 + "\n";
 		else {
 			while (1) {
@@ -259,7 +280,7 @@ void view_info()
 		exit(1);
 	}
 
-	for(int i = 0; i < tofind.length(); i++) {
+	for (int i = 0; i < tofind.length(); i++) {
 		if (isdigit(tofind[i]) == false) {
 			type = 0;
 			cin >> x;
@@ -268,7 +289,7 @@ void view_info()
 		}
 		type = 1;
 	}
-	
+
 	while (!myfile.eof()) {
 		getline(myfile, x);
 		int j = 0; //14
@@ -284,16 +305,16 @@ void view_info()
 			if (a[0] == tofind)
 			{
 				flag = true;
-				cout << "\nnumber: " + a[0] + "\nname: " + a[1] +  "\nfathername: " + a[2] + "\nlastName: " + a[3]
-					+ "\nage: " + a[4] +  "\ngender: " + a[5] + "\ndisease: " + a[6] + "\nentryDate: " + a[7]
-					+"\nserviceName: " + a[8] + "\nroom: " + a[9] + "\nphysicianRoomNumber: " + a[10]
+				cout << "\nnumber: " + a[0] + "\nname: " + a[1] + "\nfathername: " + a[2] + "\nlastName: " + a[3]
+					+ "\nage: " + a[4] + "\ngender: " + a[5] + "\ndisease: " + a[6] + "\nentryDate: " + a[7]
+					+ "\nserviceName: " + a[8] + "\nroom: " + a[9] + "\nphysicianRoomNumber: " + a[10]
 					+ "\ntotalCharge: " + a[11] + "\ntotalDeposited: " + a[12] + "address: " + a[13] + "\n";
 				break;
 			}
 		}
 		else {
 			string name = a[1] + " " + a[3];
-			
+
 			if (name.compare(tofind) == 0) {
 				flag = true;
 				cout << "\nnumber: " + a[0] + "\nname: " + a[1] + "\nfathername: " + a[2] + "\nlastName: " + a[3]
@@ -302,10 +323,10 @@ void view_info()
 					+ "\ntotalCharge: " + a[11] + "\ntotalDeposited: " + a[12] + "address: " + a[13] + "\n";
 				break;
 			}
-		
+
 		}
 	}
-	if(flag == false)
+	if (flag == false)
 		cout << "User Not Found." << endl;
 	fflush(stdin);
 	Sleep(750);
@@ -399,7 +420,7 @@ void edit_patient()
 			cin >> totalDeposited;
 			cout << "Enter patient's address: ";
 			cin >> address;
-			x  = number + " " + name + " " + fathername + " " + lastName + " "
+			x = number + " " + name + " " + fathername + " " + lastName + " "
 				+ age + " " + gender + " " + disease + " " + entryDate + " "
 				+ serviceName + " " + room + " " + physicianRoomNumber + " "
 				+ totalCharge + " " + totalDeposited + " " + address;
@@ -455,8 +476,8 @@ void delete_patient()
 				j++;
 		}
 		if (a[0] == toFind) {
-			int num1,num2;
-			num1 =  stoi(a[11]);
+			int num1, num2;
+			num1 = stoi(a[11]);
 			num2 = stoi(a[12]);
 			if ((num1 - num2) == 0) {
 				flag = true;
@@ -466,7 +487,7 @@ void delete_patient()
 				cout << "\nCannot delete Patient.\n";
 			}
 		}
-		if(flag == false)
+		if (flag == false)
 			outFile << x << endl;
 	}
 
@@ -494,34 +515,34 @@ void back()
 		"        6 - List Patients ?" << endl << "7 - Edit Patient ?" << "\t\t" << "8 - Delete Patient ?\n\n" << endl
 		<< "Enter Anything else to Quit!!\n----------------------------\n";
 	cin >> x;
-	cout << "----------------------------";
+	cout << "----------------------------\n";
 	switch (x)
 	{
-		case 1:
-			system_Login();
-			break;
-		case 2:
-			reset_pass();
-			break;
-		case 3:
-			add_admin();
-			break;
-		case 4:
-			new_patient();
-			break;
-		case 5:
-			view_info();
-			break;
-		case 6:
-			list_patients();
-			break;
-		case 7:
-			edit_patient();
-			break;
-		case 8:
-			delete_patient();
-			break;
-		default:
-			exit(1);
+	case 1:
+		system_Login();
+		break;
+	case 2:
+		reset_pass();
+		break;
+	case 3:
+		add_admin();
+		break;
+	case 4:
+		new_patient();
+		break;
+	case 5:
+		view_info();
+		break;
+	case 6:
+		list_patients();
+		break;
+	case 7:
+		edit_patient();
+		break;
+	case 8:
+		delete_patient();
+		break;
+	default:
+		exit(1);
 	}
 }

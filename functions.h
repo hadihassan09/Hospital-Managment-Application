@@ -1,0 +1,10 @@
+bool Initial_Login();
+void system_Login();
+void reset_pass();
+void add_admin();
+void new_patient();
+void view_info();
+void list_patients();
+void edit_patient();
+void delete_patient();
+void back();
